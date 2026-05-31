@@ -95,5 +95,5 @@ python price_tracker.py
 
 ## 👩‍💻 Author
 
-**fafay** — Python automation & scripting
-[Fiverr](https://www.fiverr.com/fafay) · [GitHub](https://github.com/YOUR_USERNAME)
+**Fatima Anwar** — Python automation & scripting
+[Fiverr](https://www.fiverr.com/blogsbyfatima) · [GitHub](https://github.com/YOUR_USERNAME)
