@@ -52,7 +52,7 @@ amazon-price-tracker/
 
 ```bash
 git clone https://github.com/fatimaanwar-dev/amazon_price_tracker.git
-cd amazon-price-tracker
+cd amazon_price_tracker
 pip install -r requirements.txt
 python -m playwright install chromium
 ```
