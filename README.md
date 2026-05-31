@@ -1,18 +1,15 @@
 # 🛒 Amazon Price Tracker
 
-A Python script that automatically tracks Amazon product prices and saves the full history to a beautifully formatted Excel file — with price change indicators (▲ up / ▼ down).
+A Python automation tool that tracks Amazon product prices over time and logs history to a formatted Excel report — built to demonstrate web scraping, browser automation, and data pipeline skills.
 
 ---
 
-## ✨ Features
+## 🧠 Technical Highlights
 
-- ✅ Scrapes product name and price from any Amazon product URL
-- ✅ Saves history to a formatted `.xlsx` Excel file
-- ✅ Shows price change on every run (▲ increase / ▼ decrease / → no change)
-- ✅ Color-coded rows and price change highlights
-- ✅ Polite random delay to avoid being blocked
-- ✅ Supports multiple products in one run
-- ✅ Appends to existing history — never overwrites old data
+- **Browser automation with Playwright** — uses a real Chromium instance instead of plain HTTP requests, bypassing Amazon's bot detection that blocks `requests`/`urllib` based scrapers
+- **ASIN-based URL normalization** — extracts the core product ID from any URL format (standard, short `amzn.to`, `/gp/product/`, or long tracking URLs) so price history stays consistent regardless of how the URL was pasted
+- **Incremental Excel writes** — appends new records to existing history without overwriting, using `openpyxl` for full formatting control (color-coded rows, change indicators, frozen headers)
+- **Graceful degradation** — detects CAPTCHA responses and rate limits explicitly rather than silently writing bad data
 
 ---
 
@@ -27,68 +24,76 @@ A Python script that automatically tracks Amazon product prices and saves the fu
 
 ---
 
-## 🚀 How to Run
+## 🏗️ Project Structure
 
-### 1. Clone the repo
+```
+amazon-price-tracker/
+│
+├── price_tracker.py      # Core scraper and Excel writer
+├── requirements.txt      # Dependencies
+├── sample_output.xlsx    # Example output file
+└── README.md
+```
+
+---
+
+## ⚙️ How It Works
+
+1. URLs are normalized to extract the ASIN — ensuring consistent matching across runs regardless of URL format
+2. Playwright launches a headless Chromium browser with a real user-agent and viewport, mimicking a genuine browser session
+3. A homepage visit runs first to acquire cookies before hitting the product page
+4. BeautifulSoup parses the DOM across multiple CSS selectors to handle Amazon's varying page layouts
+5. The previous price for each product is looked up by ASIN in the existing Excel history
+6. New rows are appended with change indicators (▲ / ▼ / →) and the workbook is saved
+
+---
+
+## 🚀 Getting Started
+
 ```bash
-git clone https://github.com/YOUR_USERNAME/amazon-price-tracker.git
+git clone https://github.com/fatimaanwar-dev/amazon_price_tracker.git
 cd amazon-price-tracker
-```
-
-### 2. Install dependencies
-```bash
 pip install -r requirements.txt
+python -m playwright install chromium
 ```
 
-### 3. Add your product URLs
-Open `price_tracker.py` and edit the `PRODUCT_URLS` list:
+Add your product URLs to `PRODUCT_URLS` in `price_tracker.py`:
+
 ```python
 PRODUCT_URLS = [
     "https://www.amazon.com/dp/B08N5WRWNW",
-    "https://www.amazon.com/dp/YOUR_PRODUCT_ID",
+    "https://amzn.to/3xYzABC",           # short links supported
+    "https://www.amazon.com/Some-Long-Title/dp/B07XJ8C8F5?ref=sr_1_1",  # messy URLs supported
 ]
 ```
 
-### 4. Run the script
+Then run:
+
 ```bash
 python price_tracker.py
 ```
 
-Results are saved to `price_history.xlsx` in the same folder.
+---
+
+## 📦 Dependencies
+
+| Library | Purpose |
+|---|---|
+| `playwright` | Headless browser automation |
+| `beautifulsoup4` | HTML parsing |
+| `openpyxl` | Excel file creation and formatting |
 
 ---
 
-## 🔁 Automate It (Optional)
+## ⚠️ Limitations & Known Tradeoffs
 
-Run it daily automatically using:
-
-**Windows (Task Scheduler):**
-- Open Task Scheduler → Create Basic Task → set trigger to Daily → action: run `python price_tracker.py`
-
-**Mac/Linux (cron):**
-```bash
-# Run every day at 9am
-0 9 * * * cd /path/to/project && python price_tracker.py
-```
+- Amazon occasionally serves CAPTCHAs to headless browsers — the script detects and reports this explicitly rather than writing bad data
+- Amazon's page layout changes periodically; CSS selectors may need updating if `N/A` prices appear consistently
+- For production-grade reliability, a rotating proxy service (e.g. ScraperAPI) or the official Amazon Product Advertising API would be more appropriate
 
 ---
 
-## 📦 Requirements
+## 👩‍💻 Author
 
-- Python 3.8+
-- requests
-- beautifulsoup4
-- openpyxl
-
----
-
-## ⚠️ Disclaimer
-
-This tool is for personal/educational use. Amazon's website structure may change over time, which can affect scraping. Use responsibly and in accordance with Amazon's Terms of Service.
-
----
-
-## 👨‍💻 About
-
-Built by **fafay** — Python automation freelancer on Fiverr.
-Need a custom script? [Hire me on Fiverr →](https://www.fiverr.com/fafay)
+**fafay** — Python automation & scripting
+[Fiverr](https://www.fiverr.com/fafay) · [GitHub](https://github.com/YOUR_USERNAME)
